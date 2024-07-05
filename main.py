@@ -1,5 +1,9 @@
 # bank_management_system.py
 
+ACCOUNTS = {}
+NEXT_ACCOUNT_NUMBER = 1001
+
+
 def main_menu():
     print("\n===== Bank Management System =====")
     print("1. Create Account")
@@ -12,9 +16,10 @@ def main_menu():
 
 
 def create_account(accounts):
+    global NEXT_ACCOUNT_NUMBER
+
     print("\n===== Create Account =====")
     name = input("Enter your name: ")
-    account_number = input("Enter your account number: ")
 
     try:
         initial_deposit = float(input("Enter initial deposit: "))
@@ -24,14 +29,14 @@ def create_account(accounts):
         print(f"Error: {ve}")
         return
 
-    if account_number in accounts:
-        print("Account number already exists!")
-    else:
-        accounts[account_number] = {
-            'name': name,
-            'balance': initial_deposit
-        }
-        print("Account created successfully!")
+    account_number = str(NEXT_ACCOUNT_NUMBER)  # Automatically generate account number
+    NEXT_ACCOUNT_NUMBER += 1  # Increment for the next account
+
+    accounts[account_number] = {
+        'name': name,
+        'balance': initial_deposit
+    }
+    print(f"Account created successfully! Your account number is {account_number}")
 
 
 def view_balance(accounts):
@@ -47,11 +52,17 @@ def view_balance(accounts):
 
 def deposit(accounts):
     print("\n===== Deposit Money =====")
-    account_number = input("Enter your account number: ")
 
-    if account_number not in accounts:
-        print("Account not found!")
-        return
+    while True:
+        account_number = input("Enter your account number (or type 'quit' to return): ")
+
+        if account_number.lower() == 'quit':
+            return
+
+        if account_number not in accounts:
+            print("Account not found! Please try again.")
+        else:
+            break
 
     try:
         amount = float(input("Enter amount to deposit: "))
@@ -68,11 +79,17 @@ def deposit(accounts):
 
 def withdraw(accounts):
     print("\n===== Withdraw Money =====")
-    account_number = input("Enter your account number: ")
 
-    if account_number not in accounts:
-        print("Account not found!")
-        return
+    while True:
+        account_number = input("Enter your account number (or type 'quit' to return): ")
+
+        if account_number.lower() == 'quit':
+            return
+
+        if account_number not in accounts:
+            print("Account not found! Please try again.")
+        else:
+            break
 
     try:
         amount = float(input("Enter amount to withdraw: "))
@@ -91,17 +108,17 @@ def withdraw(accounts):
 
 
 def main():
-    accounts = {}
+
     while True:
         choice = main_menu()
         if choice == '1':
-            create_account(accounts)
+            create_account(ACCOUNTS)
         elif choice == '2':
-            view_balance(accounts)
+            view_balance(ACCOUNTS)
         elif choice == '3':
-            deposit(accounts)
+            deposit(ACCOUNTS)
         elif choice == '4':
-            withdraw(accounts)
+            withdraw(ACCOUNTS)
         elif choice == '5':
             print("Exiting...")
             break
